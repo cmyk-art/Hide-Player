@@ -1,0 +1,54 @@
+local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
+local player = Players.LocalPlayer
+
+pcall(function()
+    StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
+end)
+
+local function applyUnknownStyle(character)
+    local humanoid = character:WaitForChild("Humanoid")
+
+    for _, v in pairs(character:GetDescendants()) do
+        if v:IsA("BasePart") then
+            v.Color = Color3.fromRGB(0,0,0)
+            v.Material = Enum.Material.SmoothPlastic
+        end
+    end
+
+    for _, v in pairs(character:GetChildren()) do
+        if v:IsA("Accessory") then
+            v:Destroy()
+        end
+    end
+
+    humanoid.DisplayName = "Unknown"
+
+    local head = character:WaitForChild("Head")
+
+    if head:FindFirstChild("UnknownTag") then
+        head.UnknownTag:Destroy()
+    end
+
+    local billboard = Instance.new("BillboardGui")
+    billboard.Name = "UnknownTag"
+    billboard.Size = UDim2.new(0,200,0,50)
+    billboard.StudsOffset = Vector3.new(0,2,0)
+    billboard.AlwaysOnTop = true
+    billboard.Parent = head
+
+    local text = Instance.new("TextLabel")
+    text.Size = UDim2.new(1,0,1,0)
+    text.BackgroundTransparency = 1
+    text.Text = "Unknown"
+    text.TextColor3 = Color3.fromRGB(255,255,255)
+    text.TextScaled = true
+    text.Font = Enum.Font.GothamBold
+    text.Parent = billboard
+end
+
+if player.Character then
+    applyUnknownStyle(player.Character)
+end
+
+player.CharacterAdded:Connect(applyUnknownStyle)
